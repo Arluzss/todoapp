@@ -25,8 +25,8 @@ public class TaskController {
     }
 
     @GetMapping("/{taskID}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long taskID) {
-        Task task = taskService.getTaskById(taskID);
+    public ResponseEntity<Task> findTaskById(@PathVariable Long taskID) {
+        Task task = taskService.findById(taskID);
         if (task != null) {
             return new ResponseEntity<>(task, HttpStatus.OK);
         }
@@ -49,9 +49,9 @@ public class TaskController {
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Task> updateTask(Task task) {
-        Task updatedTask = taskService.updateTask(task.getId(), task);
+    @PutMapping("/{taskID}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long taskID, @RequestBody Task task) {
+        Task updatedTask = taskService.updateTask(taskID, task);
         if (updatedTask != null) {
             return new ResponseEntity<>(updatedTask, HttpStatus.OK);
         }

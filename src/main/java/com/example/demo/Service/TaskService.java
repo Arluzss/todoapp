@@ -22,16 +22,11 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task getTaskById(Long taskId) {
+    public Task findById(Long taskId) {
         return taskRepository.findById(taskId).orElse(null);
     }
 
     public List<Task> filterTasks(FIlterTaskDTO filter) {
-        // Specification<Task> spec = Specification.wher
-        // (TaskSpecification.hasTitle(filter.getTitle()))
-        //         .and(TaskSpecification.hasDueDate(filter.getDueDate()))
-        //         .and(TaskSpecification.hasStatus(filter.getStatus()))
-        //         .and(TaskSpecification.hasPriority(filter.getPriority()));
         return taskRepository.findAll(
         TaskSpecification.hasTitle(filter.getTitle()).
         and(TaskSpecification.hasStatus(filter.getStatus())).
