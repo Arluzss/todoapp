@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import com.example.demo.Service.TaskService;
+import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.Task;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
@@ -66,9 +68,9 @@ public class TaskControllerTests {
 
     @Test
     void searchByIDNotFound() throws Exception {
-        Long notExistID = 999L;
+        Long notExistID = 994659L;
 
-        when(taskService.findById(notExistID)).thenReturn(null);
+        when(taskService.findById(notExistID)).thenThrow(new ResourceNotFoundException("Tarefa com ID " + notExistID + " não encontrada."));
 
         mockMvc.perform(get("/tasks/{id}", notExistID))
             .andExpect(status().isNotFound());
@@ -109,12 +111,11 @@ public class TaskControllerTests {
     void deleteTask() throws Exception {
         Long existID = 1L;
 
-        when(taskService.deleteTask(existID)).thenReturn(true);
-
+        when(taskService.deleteTask(existID)).thenReturn(new Task(existID, "Comprar pão", "Comprar pão na padaria da esquina", LocalDate.of(2023, 10, 1), "Pendente"));
         mockMvc.perform(delete("/tasks/{id}", existID))
-            .andExpect(status().isNoContent());
-
+            .andExpect(status().isOk());
         verify(taskService, times(1)).deleteTask(existID);
+
     }
 
 }
